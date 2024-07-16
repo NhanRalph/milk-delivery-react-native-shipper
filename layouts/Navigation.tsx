@@ -27,19 +27,12 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { RootStackParamList } from './types/navigationTypes';
 import useAuth from '@/hooks/useAuth';
 import OrderDetail from '@/screens/OrderDetail';
+import EditProfileScreen from '@/screens/EditProfileScreen';
+import ChangePasswordScreen from '@/screens/ChangePasswordScreen';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
 const tabBarProps: TabBarProps[] = [
-  {
-    route: 'Home',
-    component: HomeScreen,
-    tabBarLabel: 'Home',
-    tabBarIconProps: {
-      iconType: Icon,
-      iconName: 'home',
-    },
-  },
   {
     route: 'Orders',
     component: OrderScreen,
@@ -134,6 +127,8 @@ export default function Navigation() {
           <Stack.Screen name="OrderForm" component={OrderFormScreen} options={{ headerShown: false }} />
           <Stack.Screen name="OrderDetail" component={OrderDetail} options={{ headerShown: false }} />
           <Stack.Screen name="OrderResult" component={OrderResultScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} options={{ headerShown: true }} />
+          <Stack.Screen name="ChangePasswordScreen" component={ChangePasswordScreen} options={{ headerShown: true }} />
         </Stack.Navigator>
         <Toast />
       </NavigationContainer>

@@ -17,6 +17,7 @@ import { Button, IconButton, Paragraph } from "react-native-paper";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { StackNavigationProp } from "@react-navigation/stack";
 import { callApi } from "@/hooks/useAxios";
+import Colors from "@/constants/Colors";
 
 type RootStackParamList = {
   OrderScreen: undefined;
@@ -29,15 +30,13 @@ const OrderScreen: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation<OrderScreenNavigationProp>();
   const userID = useSelector((state: RootState) => state.user._id);
+  const shipperID = useSelector((state: RootState) => state.user.shipper);
   const [isDatePickerVisible, setDatePickerVisibility] =
     useState<boolean>(false);
-  const [deliveredAt, setDeliveredAt] = useState<Date>(new Date());
 
   const [listOrdersByDate, setListOrdersByDate] = useState<any[]>([]);
 
-  const { orders, loading, error } = useSelector(
-    (state: RootState) => state.orders
-  );
+  const [isLoading, setIsLoading] = useState(true);
 
   const formatDate = (date: Date) => {
     const d = new Date(date);
@@ -50,13 +49,20 @@ const OrderScreen: React.FC = () => {
   const [chooseDate, setChooseDate] = useState<string>(formatDate(new Date()));
 
   useEffect(() => {
-    getOrdersListByDate(chooseDate);
+    console.log(listOrdersByDate);
+    console.log(chooseDate)
+    setIsLoading(true)
+    if(chooseDate) {
+      getOrdersListByDate(chooseDate);
+    }
+    setIsLoading(false)
   }, [chooseDate]);
 
   const handleConfirm = (date: Date) => {
     setDatePickerVisibility(false);
-    setDeliveredAt(date);
+    setIsLoading(true);
     setChooseDate(formatDate(date));
+    setIsLoading(false);
   };
 
   const getOrdersListByDate = async (date: string) => {
@@ -66,7 +72,10 @@ const OrderScreen: React.FC = () => {
         `/api/orders/getByDate/${date}`
       );
       if (response) {
-        setListOrdersByDate(response);
+        const orders = response.filter((order: any) => order.order.shipper === shipperID);
+        console.log(shipperID)
+        console.log(orders);
+        setListOrdersByDate(orders);
       } else {
         Alert.alert(
           "Error",
@@ -88,25 +97,25 @@ const OrderScreen: React.FC = () => {
           <Text style={styles.orderName}>{item.shippingAddress.fullName}</Text>
           <Text>{item.shippingAddress.phone}</Text>
         </View>
-        <Text style={styles.orderPrice}>{item.order.isPaid ? parseInt('0').toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : item.package.totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</Text>
+        <Text style={styles.orderPrice}>{item.order.isPaid ? "Đơn hàng đã thanh toán" : item.order.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</Text>
       </View>
       <Text style={styles.orderAddress}>{item.shippingAddress.address}, {item.shippingAddress.city}, {item.shippingAddress.country}</Text>
       
       <View style={styles.buttonContainer}>
           <TouchableOpacity
-            style={[styles.iconButton, { backgroundColor: 'green' }]}
+            style={[styles.iconButton, { backgroundColor: Colors.lightGreen }]}
             // onPress={handleAddToCart}
           >
             <Icon name="call" size={24} color="#FFF" />
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.iconButton, { backgroundColor: 'green' }]}
+            style={[styles.iconButton, { backgroundColor: Colors.lightGreen }]}
             // onPress={handleAddToCart}
           >
             <Icon name="message" size={24} color="#FFF" />
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.orderButton, { backgroundColor: '#FF6F61' }]}
+            style={[styles.orderButton, { backgroundColor: Colors.commonBlue }]}
             onPress={() => navigation.navigate('OrderDetail', { orderId: item._id, itemId: item.order._id})}
           >
             <Text style={styles.orderButtonText}>Chi tiết</Text>
@@ -115,13 +124,13 @@ const OrderScreen: React.FC = () => {
     </View>
   );
 
-  if (loading) {
+  if (isLoading) {
     return <Text style={styles.loading}>Loading...</Text>;
   }
 
-  if (error) {
-    return <Text style={styles.error}>Error: {error}</Text>;
-  }
+  // if (error) {
+  //   return <Text style={styles.error}>Error: {error}</Text>;
+  // }
 
   // if (orders.length === 0) {
   //   return <Text style={styles.noOrders}>There's no order on {chooseDate}</Text>;
@@ -173,7 +182,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    paddingTop: 50,
+    paddingTop: 30,
     backgroundColor: "#f8f8f8",
   },
   orderContainer: {

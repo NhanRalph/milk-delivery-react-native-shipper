@@ -15,4 +15,6 @@ export type RootStackParamList = {
   OrderForm: undefined;
   OrderResult: undefined;
   OrderDetail: undefined;
+  EditProfileScreen: undefined;
+  ChangePasswordScreen: undefined;
 };

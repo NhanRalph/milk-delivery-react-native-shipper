@@ -14,8 +14,10 @@ interface Product {
 interface Package {
   _id: string;
   products: { product: Product; quantity: number }[];
-  totalAmount: number;
-  totalPrice: number;
+  typeOfDelivery: string;
+  numberOfShipment: Number;
+  discount: Number;
+  totalPriceDiscount: Number;
 }
 
 interface ShippingAddress {
@@ -29,6 +31,7 @@ interface ShippingAddress {
 interface Item {
   trackingNumber: string;
   isDelivered: boolean;
+  price: Number;
   deliveredAt: string;
   isPaid: boolean;
   status: string;

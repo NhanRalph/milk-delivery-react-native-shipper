@@ -11,7 +11,9 @@ const dark = "#626262";
 const blue = "#1F41BB";
 const gray = "#ECECEC";
 const lightBlue = "#f1f4ff";
-const warmOrange = "#FFA07A";
+const commonBlue = "#47CEFF";
+const lightGreen = "#01d990";
+const disabledButton = '#d3d3d3';
 
 export const Colors = {
   light: {
@@ -41,6 +43,8 @@ export default {
   active: blue,
   borderWithOpacity: "#1f41bb",
   lightPrimary: lightBlue,
-  gray: gray,
-  warmOrange: warmOrange,
+  gray,
+  commonBlue,
+  lightGreen,
+  disabledButton
 };

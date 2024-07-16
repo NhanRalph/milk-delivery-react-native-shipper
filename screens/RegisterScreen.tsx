@@ -34,7 +34,7 @@ const RegisterScreen: React.FC = () => {
           <Text
             style={{
               fontSize: FontSize.xLarge,
-              color: Colors.warmOrange,
+              color: Colors.commonBlue,
               fontFamily: Font["poppins-bold"],
               marginVertical: Spacing * 3,
             }}
@@ -65,10 +65,10 @@ const RegisterScreen: React.FC = () => {
         <TouchableOpacity
           style={{
             padding: Spacing * 2,
-            backgroundColor: Colors.warmOrange,
+            backgroundColor: Colors.commonBlue,
             marginVertical: Spacing * 3,
             borderRadius: Spacing,
-            shadowColor: Colors.warmOrange,
+            shadowColor: Colors.commonBlue,
             shadowOffset: {
               width: 0,
               height: Spacing,
@@ -114,7 +114,7 @@ const RegisterScreen: React.FC = () => {
           <Text
             style={{
               fontFamily: Font["poppins-semiBold"],
-              color: Colors.warmOrange,
+              color: Colors.commonBlue,
               textAlign: "center",
               fontSize: FontSize.small,
             }}

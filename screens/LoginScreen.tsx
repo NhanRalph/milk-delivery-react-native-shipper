@@ -77,11 +77,11 @@ const LoginScreen: React.FC = () => {
       <View style={{ padding: Spacing * 2 }}>
         <View style={{ alignItems: "center" }}>
           <Text style={styles.title}>Login here</Text>
-          <Text style={styles.subtitle}>Welcome back you've been missed!</Text>
+          <Text style={styles.subtitle}>Please input account was be provided</Text>
         </View>
         <View style={{ marginVertical: Spacing * 3 }}>
           <AppTextInput 
-            placeholder="Email" 
+            placeholder="Username" 
             value={userName}
             onChangeText={setUserName}
             keyboardType="email-address"
@@ -114,23 +114,6 @@ const LoginScreen: React.FC = () => {
             Wrong email or password
           </Text>
         )}
-        <TouchableOpacity onPress={() => navigation.navigate("RegisterScreen")} style={{ padding: Spacing }}>
-          <Text style={styles.createAccountText}>Create new account</Text>
-        </TouchableOpacity>
-        <View style={{ marginVertical: Spacing * 3 }}>
-          <Text style={styles.orContinueText}>Or continue with</Text>
-          <View style={styles.socialIconsContainer}>
-            <TouchableOpacity style={styles.socialIcon}>
-              <Ionicons name="logo-google" color={Colors.text} size={Spacing * 2} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.socialIcon}>
-              <Ionicons name="logo-apple" color={Colors.text} size={Spacing * 2} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.socialIcon}>
-              <Ionicons name="logo-facebook" color={Colors.text} size={Spacing * 2} />
-            </TouchableOpacity>
-          </View>
-        </View>
       </View>
     </SafeAreaView>
   );
@@ -139,7 +122,7 @@ const LoginScreen: React.FC = () => {
 const styles = StyleSheet.create({
   title: {
     fontSize: FontSize.xLarge,
-    color: Colors.warmOrange,
+    color: Colors.commonBlue,
     fontFamily: Font["poppins-bold"],
     marginVertical: Spacing * 3,
   },
@@ -152,15 +135,15 @@ const styles = StyleSheet.create({
   forgotPassword: {
     fontFamily: Font["poppins-semiBold"],
     fontSize: FontSize.small,
-    color: Colors.warmOrange,
+    color: Colors.commonBlue,
     alignSelf: "flex-end",
   },
   signInButton: {
     padding: Spacing * 2,
-    backgroundColor: Colors.warmOrange,
+    backgroundColor: Colors.commonBlue,
     marginVertical: Spacing * 3,
     borderRadius: Spacing,
-    shadowColor: Colors.warmOrange,
+    shadowColor: Colors.commonBlue,
     shadowOffset: { width: 0, height: Spacing },
     shadowOpacity: 0.3,
     shadowRadius: Spacing,
@@ -184,7 +167,7 @@ const styles = StyleSheet.create({
   },
   orContinueText: {
     fontFamily: Font["poppins-semiBold"],
-    color: Colors.warmOrange,
+    color: Colors.commonBlue,
     textAlign: "center",
     fontSize: FontSize.small,
   },

@@ -29,6 +29,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { callApi } from "@/hooks/useAxios";
 import * as WebBrowser from "expo-web-browser";
 import { useRouter } from "expo-router";
+import Colors from "@/constants/Colors";
 
 type RootStackParamList = {
   OrderDetail: { orderId: string; itemId: string },
@@ -53,6 +54,7 @@ const OrderDetail: React.FC = () => {
   const [failureModalVisible, setFailureModalVisible] = useState(false);
   const [failureReason, setFailureReason] = useState("");
   const [orderDetailData, setOrderDetailData] = useState<OrderDetailType>();
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     if (orderId && itemId) {
@@ -68,7 +70,7 @@ const OrderDetail: React.FC = () => {
         "/api/payments/create_payment_order_tracking_url",
         {
           ...orderData,
-          amount: orderDetailData?.package.totalPrice,
+          amount: orderDetailData?.item.price,
         }
       );
 
@@ -114,6 +116,11 @@ const OrderDetail: React.FC = () => {
       if (response) {
         setOrderDetailData(response);
         setIsLoading(false);
+
+        const currentStatus = response.item.status;
+        if(currentStatus === "Out for Delivery") {
+          setIsProcessing(true);
+        }
       } else {
         Alert.alert(
           "Error",
@@ -179,6 +186,40 @@ const OrderDetail: React.FC = () => {
     setIsLoading(false);
   };
 
+  const updateStatusOutForDelivery = async (orderId: string, itemId: string) => {
+    try {
+      setIsLoading(true);
+      const response = await callApi(
+        "PATCH",
+        `/api/orders/${orderId}/${itemId}/status`,
+        {
+          status: "Out for Delivery",
+          reason: null,
+        }
+      );
+      if (response) {
+        setIsProcessing(true);
+        Alert.alert(
+          "Thành công",
+          "Đơn hàng đã chuyển trạng thái thành 'Out for delivery'."
+        );
+        setIsLoading(false);
+      } else {
+        Alert.alert(
+          "Error",
+          "Failed to update status to 'Out for delivery'. Please try again."
+        );
+        setIsLoading(false);
+      }
+    } catch (error) {
+      Alert.alert(
+        "Error",
+        "Failed to update status to 'Out for delivery'. Please try again."
+      );
+      setIsLoading(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <View style={styles.centered}>
@@ -205,13 +246,26 @@ const OrderDetail: React.FC = () => {
           }}
           
           centerComponent={{
-            text: "Chi tiết đơn hàng",
+            text: `Chi tiết đơn hàng`,
             style: { fontSize: 20, fontWeight: "bold" },
           }}
           containerStyle={{ backgroundColor: "#f2f2f2" }}
         />
+        <View style={styles.flexSpaceBetween}>
+        <Text style={{ fontSize: 16, color: 'black' }}>Ngày: {orderDetailData?.item.deliveredAt}</Text>
+
+        <TouchableOpacity
+            disabled={isProcessing}
+            style={[styles.updateStatusButton, { backgroundColor: (!isProcessing) ? Colors.commonBlue : Colors.lightGreen}]}
+            onPress={() => updateStatusOutForDelivery(orderId, itemId)}
+          >
+            <Text style={styles.orderButtonText}>
+              {!isProcessing ? "Chưa đi giao" : "Đang giao hàng"}
+            </Text>
+          </TouchableOpacity>
+        </View>
         {orderDetailData && (
-          <View>
+          <View style={{marginTop:16}}>
             {orderDetailData.package.products.map((item, index) => (
               <View key={index++} style={styles.productRow}>
                 <Image
@@ -240,13 +294,15 @@ const OrderDetail: React.FC = () => {
                     style: "currency",
                     currency: "VND",
                   })
-                : orderDetailData?.package.totalPrice.toLocaleString("vi-VN", {
+                : orderDetailData?.item.price.toLocaleString("vi-VN", {
                     style: "currency",
                     currency: "VND",
                   })}
             </Text>
-            <Text style={styles.totalAmount}>
-              Số lượng sản phẩm: {orderDetailData?.package.totalAmount}
+            <Text style={styles.totalPrice}>
+              {orderDetailData?.item.isPaid
+                ?? "Đơn hàng đã được thanh toán!!!"
+              }
             </Text>
           </View>
         </View>
@@ -267,33 +323,33 @@ const OrderDetail: React.FC = () => {
 
         {(orderDetailData?.item.isPaid && isConfirmationDisabled) && <Text style={styles.textSuccess}>Đơn hàng hoàn thành!!!</Text>}
 
-        {(isFailButtonDisabled) && <Text style={styles.textSuccess}>Đơn hàng đã bị huỷ</Text>}
+        {(isFailButtonDisabled) && <Text style={styles.textSuccess}>Đơn hàng đã bị huỷ!</Text>}
 
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             disabled={isFailButtonDisabled}
-            style={[styles.iconButton, {backgroundColor: (isFailButtonDisabled)? '#d3d3d3' : "green" }]}
+            style={[styles.iconButton, {backgroundColor: (isFailButtonDisabled)? Colors.disabledButton : Colors.lightGreen }]}
             // onPress={handleAddToCart}
           >
             <Icon name="call" size={24} color="#FFF" />
           </TouchableOpacity>
           <TouchableOpacity
             disabled={isFailButtonDisabled}
-            style={[styles.iconButton, { backgroundColor: (isFailButtonDisabled)? '#d3d3d3' : "green" }]}
+            style={[styles.iconButton, { backgroundColor: (isFailButtonDisabled)? Colors.disabledButton : Colors.lightGreen }]}
             // onPress={handleAddToCart}
           >
             <Icon name="message" size={24} color="#FFF" />
           </TouchableOpacity>
           <TouchableOpacity
             disabled={orderDetailData?.item.isPaid}
-            style={[styles.orderButton, { backgroundColor: orderDetailData?.item.isPaid? '#d3d3d3' : '#6ec2f7'}]}
+            style={[styles.orderButton, { backgroundColor: orderDetailData?.item.isPaid? Colors.disabledButton : '#6ec2f7'}]}
             onPress={() => handleVNPayPayment(orderDetailData)}
           >
             <Text style={styles.orderButtonText}>Thanh toán</Text>
           </TouchableOpacity>
           <TouchableOpacity
             disabled={isFailButtonDisabled}
-            style={[styles.orderButton, { backgroundColor: (isFailButtonDisabled) ? '#d3d3d3' : 'red'}]}
+            style={[styles.orderButton, { backgroundColor: (isFailButtonDisabled) ? Colors.disabledButton : 'red'}]}
             onPress={() => showFailureDialog(orderId, itemId, 'Failed')}
           >
             <Text style={styles.orderButtonText}>Thất bại</Text>
@@ -301,7 +357,7 @@ const OrderDetail: React.FC = () => {
         </View>
           <TouchableOpacity
             disabled={isFailButtonDisabled || isConfirmationDisabled}
-            style={[styles.confirmButton, { backgroundColor: (isFailButtonDisabled || isConfirmationDisabled)? '#d3d3d3' : '#FF6F61'}]}
+            style={[styles.confirmButton, { backgroundColor: (isFailButtonDisabled || isConfirmationDisabled)? Colors.disabledButton : Colors.commonBlue }]}
             onPress={() => showConfirmationDialog(orderId, itemId, 'Completed', null)}
           >
             <Text style={styles.confirmButtonText}>Xác nhận thành công</Text>
@@ -341,8 +397,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#f2f2f2",
   },
   contentContainer: {
+    paddingBottom: 20,
     paddingHorizontal: 16,
-    paddingBottom: 16,
   },
   centered: {
     flex: 1,
@@ -383,6 +439,7 @@ const styles = StyleSheet.create({
   },
   totalPrice: {
     fontSize: 20,
+    color: "red",
     fontWeight: "bold",
   },
   totalAmount: {
@@ -414,6 +471,16 @@ const styles = StyleSheet.create({
   },
   iconButton: {
     width: 40,
+    height: 40,
+    padding: 4,
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#6ec2f7",
+    marginHorizontal: 4,
+  },
+  updateStatusButton: {
+    width: 200,
     height: 40,
     padding: 4,
     borderRadius: 8,

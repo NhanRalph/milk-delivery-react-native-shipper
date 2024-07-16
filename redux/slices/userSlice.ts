@@ -9,6 +9,7 @@ interface UserState {
   phoneNumber: string;
   role: string;
   address: string;
+  shipper?: string;
 }
 
 const initialState: UserState = {
@@ -20,6 +21,7 @@ const initialState: UserState = {
   phoneNumber: "",
   role: "",
   address: "",
+  shipper: "",
 };
 
 const userSlice = createSlice({

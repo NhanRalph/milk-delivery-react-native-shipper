@@ -25,7 +25,7 @@ const WelcomeScreen: React.FC = () => {
       <View>
         <ImageBackground
           style={{
-            height: height / 2.5,
+            height: height / 3 ,
           }}
           resizeMode="contain"
           source={require("../assets/images/welcome-img2.png")}
@@ -39,7 +39,7 @@ const WelcomeScreen: React.FC = () => {
           <Text
             style={{
               fontSize: FontSize.xxLarge,
-              color: Colors.warmOrange,
+              color: Colors.commonBlue,
               fontFamily: Font["poppins-bold"],
               textAlign: "center",
             }}
@@ -56,7 +56,7 @@ const WelcomeScreen: React.FC = () => {
               marginTop: Spacing * 2,
             }}
           >
-            Get the best milk delivery experience with us
+            Get fresh milk delivered to your doorstep.
           </Text>
         </View>
         <View
@@ -69,12 +69,12 @@ const WelcomeScreen: React.FC = () => {
           <TouchableOpacity
             onPress={() => navigation.navigate("LoginScreen")}
             style={{
-              backgroundColor: Colors.warmOrange,
+              backgroundColor: Colors.commonBlue,
               paddingVertical: Spacing * 1.5,
               paddingHorizontal: Spacing * 2,
-              width: "48%",
+              width: "100%",
               borderRadius: Spacing,
-              shadowColor: Colors.warmOrange,
+              shadowColor: Colors.lightPrimary,
               shadowOffset: {
                 width: 0,
                 height: Spacing,
@@ -92,26 +92,6 @@ const WelcomeScreen: React.FC = () => {
               }}
             >
               Login
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("RegisterScreen")}
-            style={{
-              paddingVertical: Spacing * 1.5,
-              paddingHorizontal: Spacing * 2,
-              width: "48%",
-              borderRadius: Spacing,
-            }}
-          >
-            <Text
-              style={{
-                fontFamily: Font["poppins-bold"],
-                color: Colors.text,
-                fontSize: FontSize.large,
-                textAlign: "center",
-              }}
-            >
-              Register
             </Text>
           </TouchableOpacity>
         </View>
